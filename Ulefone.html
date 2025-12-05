@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ulefone Portfolio 2025</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff9800;
+            --dark: #121212;
+            --darker: #0a0a0a;
+            --card-bg: #1e1e1e;
+            --text: #e0e0e0;
+            --text-muted: #aaaaaa;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--darker);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background-color: var(--dark);
+            border-right: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .brand {
+            font-size: 24px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+        }
+
+        .brand img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .nav-section {
+            font-size: 12px;
+            font-weight: 700;
+            color: #666;
+            text-transform: uppercase;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            padding-left: 15px;
+            letter-spacing: 1px;
+        }
+
+        .nav-item {
+            padding: 12px 15px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            color: var(--text-muted);
+        }
+
+        .nav-item i { margin-right: 10px; width: 20px; text-align: center; }
+
+        .nav-item:hover {
+            background-color: rgba(255, 152, 0, 0.1);
+            color: #fff;
+        }
+
+        .nav-item.active {
+            background-color: var(--primary);
+            color: #000;
+            font-weight: 700;
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: var(--primary);
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* Product Grid */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .product-card {
+            background-color: var(--card-bg);
+            border: 1px solid #333;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .product-image {
+            height: 240px;
+            background-color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 15px;
+        }
+
+        .product-image img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .product-info {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        /* UPDATED BADGE STYLE BASED ON IMAGE */
+        .product-badge {
+            display: inline-block;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            background-color: rgba(20, 20, 20, 0.6); /* Sötétebb háttér */
+            font-size: 11px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            width: fit-content;
+            letter-spacing: 0.5px;
+        }
+
+        .specs-list {
+            list-style: none;
+            font-size: 14px;
+            color: #ccc;
+            margin-top: auto;
+        }
+
+        .specs-list li {
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #333;
+            padding-bottom: 6px;
+        }
+
+        .specs-list li span:first-child { color: #888; }
+        .specs-list li span:last-child { font-weight: 600; color: #fff; text-align: right; max-width: 60%; }
+
+        /* Table Styling */
+        .table-container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            overflow-x: auto;
+            border: 1px solid #333;
+            margin-top: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i { margin-right: 10px; color: var(--primary); }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            min-width: 800px;
+        }
+
+        th {
+            text-align: left;
+            padding: 15px;
+            background-color: #252525;
+            color: var(--primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #333;
+            color: #ddd;
+            vertical-align: top;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background-color: #2a2a2a; }
+
+        .fw-bold { font-weight: 700; color: #fff; }
+        .text-highlight { color: var(--primary); font-weight: bold; }
+        
+        .export-btn {
+            background-color: var(--primary);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .export-btn:hover {
+            background-color: #e68900;
+        }
+
+        /* Full Data Table specific */
+        #full-data-table td {
+            white-space: nowrap;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="brand"><img src="https://ulefone.com/cdn/shop/files/logo.png?v=1689149462" alt="Ulefone Logo"></div>
+        
+        <div class="nav-section">RUGGED SERIES</div>
+        <div class="nav-item active" onclick="showPage('flagship')">
+            <i class="fas fa-crown"></i> <span>5G Flagship</span>
+        </div>
+        <div class="nav-item" onclick="showPage('specialist')">
+            <i class="fas fa-tools"></i> <span>5G Specialist</span>
+        </div>
+        <div class="nav-item" onclick="showPage('compact')">
+            <i class="fas fa-compress-arrows-alt"></i> <span>Compact & RugOne</span>
+        </div>
+        <div class="nav-item" onclick="showPage('mainstream')">
+            <i class="fas fa-shield-alt"></i> <span>4G Mainstream</span>
+        </div>
+        <div class="nav-item" onclick="showPage('armorx')">
+            <i class="fas fa-layer-group"></i> <span>Armor X Series</span>
+        </div>
+        <div class="nav-item" onclick="showPage('rugking')">
+            <i class="fas fa-hard-hat"></i> <span>RugKing Series</span>
+        </div>
+        <div class="nav-item" onclick="showPage('ruggedfeat')">
+            <i class="fas fa-mobile-alt"></i> <span>Rugged Feature Phone</span>
+        </div>
+        <div class="nav-item" onclick="showPage('ruggedtab')">
+            <i class="fas fa-tablet-alt"></i> <span>Rugged Tablets</span>
+        </div>
+
+        <div class="nav-section">NON-RUGGED SERIES</div>
+        <div class="nav-item" onclick="showPage('consumer')">
+            <i class="fas fa-leaf"></i> <span>Consumer Devices</span>
+        </div>
+
+        <div class="nav-section">DATA</div>
+        <div class="nav-item" onclick="showPage('alldata')">
+            <i class="fas fa-database"></i> <span>All Data & Export</span>
+        </div>
+    </div>
+
+    <div class="main">
+
+        <div id="flagship" class="page active">
+            <div class="header">
+                <div>
+                    <h1>5G Flagship Series</h1>
+                    <p>Armor 28, 29, 30, 34 Series</p>
+                </div>
+            </div>
+
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-image"><img src="https://store.ulefone.com/cdn/shop/files/UlefoneArmor29Pro-MarvelBlack-1000px-18.jpg?v=1762841955&width=800" alt="Armor 29 Pro"></div>
+                    <div class="product-info">
+                        <div class="product-title">Armor 29 Pro</div>
+                        <div class="product-badge">DUAL OLED</div>
+                        <ul class="specs-list">
+                            <li><span>Feature</span> <span>Dual OLED Display, Versatile LED Light</span></li>
+                            <li><span>CPU</span> <span>MediaTek Dimensity 7400 5G Soc</span></li>
+                            <li><span>RAM/ROM</span> <span>16GB / 512GB</span></li>
+                            <li><span>Battery</span> <span>21200mAh</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image"><img src="https://store.ulefone.com/cdn/shop/files/UlefoneArmor28UltraThermal-Black-1000px-9.jpg?v=1762842265&width=800" alt="Armor 28 Ultra"></div>
+                    <div class="product-info">
+                        <div class="product-title">Armor 28 Ultra</div>
+                        <div class="product-badge">TOP PERFORMANCE</div>
+                        <ul class="specs-list">
+                            <li><span>Feature</span> <span>Dual AMOLED screen, 64MP Infrared Night Vision Camera</span></li>
+                            <li><span>CPU</span> <span>MediaTek Dimensity 9300+ 5G Soc</span></li>
+                            <li><span>RAM/ROM</span> <span>16GB / 1TB</span></li>
+                            <li><span>Battery</span> <span>10560mAh</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image"><img src="https://store.ulefone.com/cdn/shop/files/UlefoneArmor34Pro-PulseBlack-1000px-12.jpg" alt="Armor 34 Pro"></div>
+                    <div class="product-info">
+                        <div class="product-title">Armor 34 Pro</div>
+                        <div class="product-badge">DLP PROJECTOR</div>
+                        <ul class="specs-list">
+                            <li><span>Feature</span> <span>Built-in Projector</span></li>
+                            <li><span>CPU</span> <span>MediaTek Dimensity 7300, 4nm, MediaTek NPU 655</span></li>
+                            <li><span>RAM/ROM</span> <span>16GB / 512GB</span></li>
+                            <li><span>Battery</span> <span>25500mAh</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image"><img src="https://store.ulefone.com/cdn/shop/files/UlefoneArmor30Pro-MagicBlack-1000px-20.jpg?v=1762842234&width=800" alt="Armor 30 Pro"></div>
+                    <div class="product-info">
+                        <div class="product-title">Armor 30 Pro</div>
+                        <div class="product-badge">DUAL SCREEN</div>
+                        <ul class="specs-list">
+                            <li><span>Feature</span> <span>3.4-inch 60Hz Dual-screen, Halo Speaker</span></li>
+                            <li><span>CPU</span> <span>MediaTek Dimensity 7300X 5G</span></li>
+                            <li><span>RAM/ROM</span> <span>16GB / 512GB</span></li>
+                            <li><span>Battery</span> <span>12800 mAh</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <div class="section-title"><i class="fas fa-table"></i> Comparison</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Key Feature</th>
+                            <th>CPU</th>
+                            <th>RAM / ROM</th>
+                            <th>Battery</th>
+                            <th>RRP (HUF)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="fw-bold">Armor 29 Pro</td>
+                            <td>Dual OLED Display, Versatile LED Light</td>
+                            <td>MediaTek Dimensity 7400 5G Soc</td>
+                            <td>16GB / 512GB</td>
+                            <td>21200mAh</td>
+                            <td class="text-highlight">269,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Armor 29 Ultra</td>
+                            <td>Giant Battery, Dual OLED</td>
+                            <td>MediaTek Dimensity 7400 5G Soc</td>
+                            <td>16GB / 1TB</td>
+                            <td>21200mAh</td>
+                            <td class="text-highlight">449,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Armor 28 Ultra</td>
+                            <td>Dual AMOLED screen, 64MP Infrared Night Vision Camera</td>
+                            <td>MediaTek Dimensity 9300+ 5G Soc</td>
+                            <td>16GB / 1TB</td>
+                            <td>10560mAh</td>
+                            <td class="text-highlight">449,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Armor 34 Pro</td>
+                            <td>Built-in Projector</td>
+                            <td>MediaTek Dimensity 7300, 4nm</td>
+                            <td>16GB / 512GB</td>
+                            <td>25500mAh</td>
+                            <td class="text-highlight">329,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Armor 30 Pro</td>
+                            <td>Halo Speaker, Dual Display</td>
+                            <td>MediaTek Dimensity 7300X 5G</td>
+                            <td>16GB / 512GB</td>
+                            <td>12800 mAh</td>
+                            <td class="text-highlight">229,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Armor 30</td>
+                            <td>Hi-Fi Loud Speaker, Versatile LED Light</td>
+                            <td>MediaTek Helio G100</td>
+                            <td>12GB / 512GB</td>
+                            <td>12800 mAh</td>
+                            <td class="text-highlight">179,990 HUF</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="specialist" class="page">
+            <div class="header">
+                <h1>5G Specialist Series</h1>
+                <p>Walkie-Talkie, Thermal, Ultra-Slim</p>
+            </div>
+
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-image"><img src="https://store.ulefone.com/cdn/shop/files/5G_rugged_phone_UlefoneArmor26UltraWalkie-Talkie.jpg?v=1762843974&width=800" alt="Armor 26 Ultra WT"></div>
+                    <div class="product-info">
+                        <div class="product-title">Armor 26 Ultra WT</div>
+                        <div class="product-badge">WALKIE-TALKIE</div>
+                        <ul class="specs-list">
+                            <li><span>Feature</span> <span>Support Push-to-Talk over DMR, Dock charging</span></li>
+                            <li><span>CPU</span> <span>MediaTek Dimensity 8020 5G</span></li>
+                            <li><span>RAM/ROM</span> <span>12GB / 512GB</span></li>
+                            <li><span>Battery</span> <span>15600mAh</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image"><img src="https://store.ulefone.com/cdn/shop/files/Ulefone_Armor_27T_Pro_Thermal_imaging_Rugged_Phone.jpg?v=1762842730&width=800" alt="Armor 27T Pro"></div>
+                    <div class="product-info">
+                        <div class="product-title">Armor 27T Pro</div>
+                        <div class="product-badge">FLIR THERMAL</div>
+                        <ul class="specs-list">
+                            <li><span>Feature</span> <span>With FLIR Thermal Imaging</span></li>
+                            <li><span>CPU</span> <span>MediaTek Dimensity 6300 5G Soc</span></li>
+                            <li><span>RAM/ROM</span> <span>12GB / 256GB</span></li>
+                            <li><span>Battery</span> <span>10600mAh</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image"><img src="https://store.ulefone.com/cdn/shop/files/Ulefone_Armor_25T_Ruggedized_Phones_FrostBlack.jpg?v=1762842763&width=800" alt="Armor 25T Pro"></div>
+                    <div class="product-info">
+                        <div class="product-title">Armor 25T Pro</div>
+                        <div class="product-badge">THERMOVUE</div>
+                        <ul class="specs-list">
+                            <li><span>Feature</span> <span>With ThermoVue Thermal Imaging, Slim</span></li>
+                            <li><span>CPU</span> <span>MediaTek Dimensity 6300 5G</span></li>
+                            <li><span>RAM/ROM</span> <span>8GB / 256GB</span></li>
+                            <li><span>Battery</span> <span>6500mAh</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <div class="section-title"><i class="fas fa-table"></i> Comparison</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Key Feature</th>
+                            <th>CPU</th>
+                            <th>RAM / ROM</th>
+                            <th>Battery</th>
+                            <th>RRP (HUF)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="fw-bold">Armor 26 Ultra WT</td>
+                            <td>Support Push-to-Talk over DMR, Dock charging</td>
+                            <td>MediaTek Dimensity 8020 5G</td>
+                            <td>12GB / 512GB</td>
+                            <td>15600mAh</td>
+                            <td class="text-highlight">279,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Armor 26 Ultra</td>
+                            <td>Support Dock charging, Endoscope, Microscope</td>
+                            <td>MediaTek Dimensity 8020 5G</td>
+                            <td>12GB / 512GB</td>
+                            <td>15600mAh</td>
+                            <td class="text-highlight">249,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Armor 27T Pro</td>
+                            <td>With FLIR Thermal Imaging, Infrared night vision</td>
+                            <td>MediaTek Dimensity 6300 5G Soc</td>
+                            <td>12GB / 256GB</td>
+                            <td>10600mAh</td>
+                            <td class="text-highlight">219,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Armor 27 Pro</td>
+                            <td>With Infrared night vision camera</td>
+                            <td>MediaTek Dimensity 6300 5G Soc</td>
+                            <td>12GB / 256GB</td>
+                            <td>10600mAh</td>
+                            <td class="text-highlight">179,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Armor 27</td>
+                            <td>64MP Infrared Night Vision Camera, uSmart Expansion Connector</td>
+                            <td>MediaTek Helio G99</td>
+                            <td>12GB / 256GB</td>
+                            <td>10600mAh</td>
+                            <td class="text-highlight">149,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Armor 25T Pro</td>
+                            <td>With ThermoVue Thermal Imaging, Slim</td>
+                            <td>MediaTek Dimensity 6300 5G</td>
+                            <td>8GB / 256GB</td>
+                            <td>6500mAh</td>
+                            <td class="text-highlight">179,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Armor 25T</td>
+                            <td>With ThermoVue Thermal Imaging, Slim</td>
+                            <td>MediaTek Helio G99</td>
+                            <td>6GB / 256GB</td>
+                            <td>6500mAh</td>
+                            <td class="text-highlight">159,990 HUF</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="compact" class="page">
+            <div class="header">
+                <h1>Compact 5G & RugOne</h1>
+                <p>Mini Size and Business Premium</p>
+            </div>
+
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-image"><img src="https://store.ulefone.com/cdn/shop/files/Ulefone_Armor_Mini_20T_Pro_Rugged_Small_Smartphone.jpg?v=1762842575&width=800" alt="Armor Mini 20T Pro"></div>
+                    <div class="product-info">
+                        <div class="product-title">Armor Mini 20T Pro</div>
+                        <div class="product-badge">COMPACT THERMAL</div>
+                        <ul class="specs-list">
+                            <li><span>Feature</span> <span>Mini Size, with FLIR Thermal imaging</span></li>
+                            <li><span>CPU</span> <span>MediaTek Dimensity 6300 5G Soc</span></li>
+                            <li><span>RAM/ROM</span> <span>8GB / 256GB</span></li>
+                            <li><span>Battery</span> <span>6200mAh</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image"><img src="https://ulefone.co.uk/wp-content/uploads/2025/11/RugOne-Xever-7-Black-1000px-34.jpg" alt="Xever 7 Pro"></div>
+                    <div class="product-info">
+                        <div class="product-title">RugOne Xever 7 Pro</div>
+                        <div class="product-badge">SWAPPABLE BATTERY</div>
+                        <ul class="specs-list">
+                            <li><span>Feature</span> <span>Thermal by FLIR Lepton 3.5, Swappable battery</span></li>
+                            <li><span>CPU</span> <span>MediaTek Dimensity 7025</span></li>
+                            <li><span>RAM/ROM</span> <span>12GB / 512GB</span></li>
+                            <li><span>Battery</span> <span>5550mAh</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <div class="section-title"><i class="fas fa-table"></i> Comparison</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Key Feature</th>
+                            <th>CPU</th>
+                            <th>RAM / ROM</th>
+                            <th>Battery</th>
+                            <th>RRP (HUF)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="fw-bold">Armor Mini 20T Pro</td>
+                            <td>Mini Size, with FLIR Thermal imaging</td>
+                            <td>MediaTek Dimensity 6300 5G Soc</td>
+                            <td>8GB / 256GB</td>
+                            <td>6200mAh</td>
+                            <td class="text-highlight">209,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Armor Mini 20 Pro</td>
+                            <td>Mini size, with Infrared night vision</td>
+                            <td>MediaTek Dimensity 6300 5G Soc</td>
+                            <td>8GB / 256GB</td>
+                            <td>6200mAh</td>
+                            <td class="text-highlight">159,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Xever 7 Pro</td>
+                            <td>Thermal by FLIR Lepton 3.5, Swappable battery</td>
+                            <td>MediaTek Dimensity 7025</td>
+                            <td>12GB / 512GB</td>
+                            <td>5550mAh</td>
+                            <td class="text-highlight">279,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Xever 7</td>
+                            <td>Swappable battery</td>
+                            <td>MediaTek Dimensity 7025</td>
+                            <td>12GB / 512GB</td>
+                            <td>5550mAh</td>
+                            <td class="text-highlight">219,990 HUF</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="mainstream" class="page">
+            <div class="header">
+                <h1>4G Mainstream</h1>
+                <p>The Classics (Armor 21, 22)</p>
+            </div>
+
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-image"><img src="https://store.ulefone.com/cdn/shop/products/Military_Level_of_Ruggedness_Armor_22.jpg?v=1762511124&width=800" alt="Armor 22"></div>
+                    <div class="product-info">
+                        <div class="product-title">Armor 22</div>
+                        <div class="product-badge">NIGHT VISION</div>
+                        <ul class="specs-list">
+                            <li><span>Feature</span> <span>With Infrared night vision camera</span></li>
+                            <li><span>CPU</span> <span>MediaTek Helio G96 Octa-core 2.05GHz Chipset</span></li>
+                            <li><span>RAM/ROM</span> <span>8GB / 256GB</span></li>
+                            <li><span>Battery</span> <span>6600mAh Battery</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image"><img src="https://store.ulefone.com/cdn/shop/files/armor21-1.jpg?v=1762843163&width=800" alt="Armor 21"></div>
+                    <div class="product-info">
+                        <div class="product-title">Armor 21</div>
+                        <div class="product-badge">INFINITE HALO</div>
+                        <ul class="specs-list">
+                            <li><span>Feature</span> <span>With night vision camera, Support desk charging dock</span></li>
+                            <li><span>CPU</span> <span>MediaTek Helio G99 Octa-core 2.2GHz Chipset</span></li>
+                            <li><span>RAM/ROM</span> <span>8GB / 256GB</span></li>
+                            <li><span>Battery</span> <span>9600mAh Battery</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <div class="section-title"><i class="fas fa-table"></i> Comparison</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Key Feature</th>
+                            <th>CPU</th>
+                            <th>RAM / ROM</th>
+                            <th>Battery</th>
+                            <th>RRP (HUF)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="fw-bold">Armor 22</td>
+                            <td>With Infrared night vision camera</td>
+                            <td>MediaTek Helio G96</td>
+                            <td>8GB / 256GB</td>
+                            <td>6600mAh</td>
+                            <td class="text-highlight">109,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Armor 21</td>
+                            <td>With night vision camera, Support desk charging dock</td>
+                            <td>MediaTek Helio G99</td>
+                            <td>8GB / 256GB</td>
+                            <td>9600mAh</td>
+                            <td class="text-highlight">129,990 HUF</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="armorx" class="page">
+            <div class="header">
+                <h1>Armor X Series</h1>
+                <p>Cost-effective Fleet Devices</p>
+            </div>
+            
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-image"><img src="https://store.ulefone.com/cdn/shop/files/Ulefone_Armor_X32_Pro_Classic_Black-1000px-24.jpg" alt="X32 Pro"></div>
+                    <div class="product-info">
+                        <div class="product-title">Armor X32 Pro</div>
+                        <div class="product-badge">5G COST-EFFECTIVE</div>
+                        <ul class="specs-list">
+                            <li><span>Feature</span> <span>With Night Vision Camera</span></li>
+                            <li><span>CPU</span> <span>MediaTek Dimensity 6300 5G Soc</span></li>
+                            <li><span>RAM/ROM</span> <span>8GB / 256GB</span></li>
+                            <li><span>Battery</span> <span>5500mAh</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image"><img src="https://store.ulefone.com/cdn/shop/files/Ulefone_Armor_X16_Pro_Wasteland_Shadow-1000px-26.jpg" alt="X16 Pro"></div>
+                    <div class="product-info">
+                        <div class="product-title">Armor X16 Pro</div>
+                        <div class="product-badge">LARGE BATTERY</div>
+                        <ul class="specs-list">
+                            <li><span>Feature</span> <span>With Night Vision Camera</span></li>
+                            <li><span>CPU</span> <span>MediaTek Dimensity 6300 5G Soc</span></li>
+                            <li><span>RAM/ROM</span> <span>8GB / 256GB</span></li>
+                            <li><span>Battery</span> <span>10360mAh</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image"><img src="https://www.ulefone.com/cdn/shop/files/Armor-X12-Pro-1_1024x1024.jpg?v=1733220000" onerror="this.src='https://fdn2.gsmarena.com/vv/bigpic/ulefone-armor-x12-pro.jpg'" alt="X12 Pro"></div>
+                    <div class="product-info">
+                        <div class="product-title">Armor X12 Pro</div>
+                        <div class="product-badge">PALM SIZE</div>
+                        <ul class="specs-list">
+                            <li><span>Feature</span> <span>Palm-Size design</span></li>
+                            <li><span>CPU</span> <span>MediaTek Helio G36 Octa-core 2.2GHz Chipset</span></li>
+                            <li><span>RAM/ROM</span> <span>4GB / 64GB</span></li>
+                            <li><span>Battery</span> <span>4860mAh</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <div class="section-title"><i class="fas fa-table"></i> Comparison</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Feature</th>
+                            <th>CPU</th>
+                            <th>RAM / ROM</th>
+                            <th>Battery</th>
+                            <th>RRP (HUF)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="fw-bold">Armor X32 Pro</td>
+                            <td>With Night Vision Camera</td>
+                            <td>MediaTek Dimensity 6300 5G Soc</td>
+                            <td>8GB / 256GB</td>
+                            <td>5500mAh</td>
+                            <td class="text-highlight">129,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Armor X32</td>
+                            <td>With Night Vision Camera</td>
+                            <td>MediaTek Helio G91</td>
+                            <td>6GB / 128GB</td>
+                            <td>5500mAh</td>
+                            <td class="text-highlight">89,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Armor X31 Pro</td>
+                            <td>With Night Vision Camera</td>
+                            <td>MediaTek Dimensity 6300 5G Soc</td>
+                            <td>8GB / 256GB</td>
+                            <td>6050mAh</td>
+                            <td class="text-highlight">129,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Armor X31</td>
+                            <td>With Night Vision Camera</td>
+                            <td>MediaTek Helio G91</td>
+                            <td>6GB / 128GB</td>
+                            <td>6050mAh</td>
+                            <td class="text-highlight">89,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Armor X16 Pro</td>
+                            <td>With Night Vision Camera</td>
+                            <td>MediaTek Dimensity 6300 5G Soc</td>
+                            <td>8GB / 256GB</td>
+                            <td>10360mAh</td>
+                            <td class="text-highlight">139,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Armor X16</td>
+                            <td>With Night Vision Camera</td>
+                            <td>MediaTek Helio G96</td>
+                            <td>6GB / 128GB</td>
+                            <td>10360mAh</td>
+                            <td class="text-highlight">99,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Armor X13</td>
+                            <td>Night Vision Camera, Diamond design</td>
+                            <td>MediaTek Helio G36 Octa-core 2.2GHz Chipset</td>
+                            <td>6GB / 64GB</td>
+                            <td>6320mAh Battery</td>
+                            <td class="text-highlight">79,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Armor X12 Pro</td>
+                            <td>Palm-Size design</td>
+                            <td>MediaTek Helio G36 Octa-core 2.2GHz Chipset</td>
+                            <td>4GB / 64GB</td>
+                            <td>4860mAh</td>
+                            <td class="text-highlight">69,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Armor X12</td>
+                            <td>Palm-Size design</td>
+                            <td>MediaTek Helio A22, 2.0GHz Chipset</td>
+                            <td>3GB / 32GB</td>
+                            <td>4860mAh</td>
+                            <td class="text-highlight">59,990 HUF</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="rugking" class="page">
+            <div class="header">
+                <h1>RugKing Series</h1>
+                <p>Industrial, Physical Buttons, Cost-effective</p>
+            </div>
+
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-image"><img src="https://cdn.shopify.com/s/files/1/0830/0573/5193/files/rugking-4-pro-spec-1.webp" alt="RugKing 4"></div>
+                    <div class="product-info">
+                        <div class="product-title">RugKing 4 Pro</div>
+                        <div class="product-badge">INDUSTRIAL</div>
+                        <ul class="specs-list">
+                            <li><span>Feature</span> <span>10200mAh Large Battery, Rugged Design</span></li>
+                            <li><span>CPU</span> <span>Unisoc T7250</span></li>
+                            <li><span>RAM/ROM</span> <span>8GB / 256GB</span></li>
+                            <li><span>Battery</span> <span>10200mAh</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image"><img src="https://cdn.shopify.com/s/files/1/0830/0573/5193/files/rugking-2-pro-spec-1.webp" alt="RugKing 2"></div>
+                    <div class="product-info">
+                        <div class="product-title">RugKing 2 Pro</div>
+                        <div class="product-badge">COMPACT</div>
+                        <ul class="specs-list">
+                            <li><span>Feature</span> <span>5.45-inch Compact Design</span></li>
+                            <li><span>CPU</span> <span>Unisoc T7250</span></li>
+                            <li><span>RAM/ROM</span> <span>4GB / 128GB</span></li>
+                            <li><span>Battery</span> <span>5000mAh</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <div class="section-title"><i class="fas fa-table"></i> Comparison</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Feature</th>
+                            <th>CPU</th>
+                            <th>RAM / ROM</th>
+                            <th>Battery</th>
+                            <th>RRP (HUF)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="fw-bold">RugKing 4 Pro</td>
+                            <td>10200mAh Large Battery, Rugged Design</td>
+                            <td>Unisoc T7250</td>
+                            <td>8GB / 256GB</td>
+                            <td>10200mAh</td>
+                            <td class="text-highlight">89,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">RugKing 3 Pro</td>
+                            <td>90Hz Display, Rugged Design</td>
+                            <td>Unisoc T7250</td>
+                            <td>8GB / 128GB</td>
+                            <td>5700mAh</td>
+                            <td class="text-highlight">69,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">RugKing 2 Pro</td>
+                            <td>5.45-inch Compact Design</td>
+                            <td>Unisoc T7250</td>
+                            <td>4GB / 128GB</td>
+                            <td>5000mAh</td>
+                            <td class="text-highlight">69,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">RugKing</td>
+                            <td>5.99-inch HD+</td>
+                            <td>Unisoc T7255</td>
+                            <td>8GB / 256GB</td>
+                            <td>9600mAh</td>
+                            <td class="text-highlight">109,990 HUF</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="ruggedfeat" class="page">
+            <div class="header">
+                <h1>Rugged Feature Phone</h1>
+            </div>
+            
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-image"><img src="https://cdn.shopify.com/s/files/1/0830/0573/5193/files/armor-mini-4-spec-1.webp" onerror="this.src='https://fdn2.gsmarena.com/vv/bigpic/ulefone-armor-mini-4.jpg'" alt="Mini 4"></div>
+                    <div class="product-info">
+                        <div class="product-title">Armor Mini 4</div>
+                        <div class="product-badge">FEATURE PHONE</div>
+                        <ul class="specs-list">
+                            <li><span>Feature</span> <span>Compact and Durable Mobile Device</span></li>
+                            <li><span>CPU</span> <span>Unisoc T117</span></li>
+                            <li><span>RAM/ROM</span> <span>64MB / 128MB</span></li>
+                            <li><span>Battery</span> <span>2100mAh</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="table-container">
+                <div class="section-title"><i class="fas fa-table"></i> Comparison</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Key Feature</th>
+                            <th>CPU</th>
+                            <th>RAM / ROM</th>
+                            <th>Battery</th>
+                            <th>RRP (HUF)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="fw-bold">Armor Mini 4</td>
+                            <td>Compact and Durable Mobile Device</td>
+                            <td>Unisoc T117</td>
+                            <td>64MB / 128MB</td>
+                            <td>2100mAh</td>
+                            <td class="text-highlight">29,990 HUF</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="ruggedtab" class="page">
+            <div class="header">
+                <h1>Rugged Tablets</h1>
+                <p>Armor Pad Series (Industrial)</p>
+            </div>
+            
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-image"><img src="https://store.ulefone.com/cdn/shop/files/UlefoneArmorPad5Ultra-Black-1000px-19.jpg" alt="Pad 5 Ultra"></div>
+                    <div class="product-info">
+                        <div class="product-title">Armor Pad 5 Ultra</div>
+                        <div class="product-badge">5G PROJECTOR</div>
+                        <ul class="specs-list">
+                            <li><span>Feature</span> <span>Built-in DLP Projector (540P), Dual Versatile LED Light</span></li>
+                            <li><span>CPU</span> <span>Helio Dimensity 7400 5G SOC</span></li>
+                            <li><span>RAM/ROM</span> <span>12GB / 512GB</span></li>
+                            <li><span>Battery</span> <span>24200mAh</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image"><img src="https://store.ulefone.com/cdn/shop/files/Ulefone_Armor_Pad_4_Ultra_Thermal_Version-Black-1000px_30.jpg" onerror="this.src='https://store.ulefone.com/cdn/shop/files/Ulefone_Armor_Pad_4_Ultra_Thermal_Version-Black-1000px_30.jpg'" alt="Pad 4 Ultra Thermal"></div>
+                    <div class="product-info">
+                        <div class="product-title">Armor Pad 4 Ultra Thermal</div>
+                        <div class="product-badge">THERMOVUE 5G</div>
+                        <ul class="specs-list">
+                            <li><span>Feature</span> <span>ThermoVue Thermal Imaging, HDMI, LED Light</span></li>
+                            <li><span>CPU</span> <span>Dimensity 6300 5G</span></li>
+                            <li><span>RAM/ROM</span> <span>8GB / 256GB</span></li>
+                            <li><span>Battery</span> <span>11800mAh</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image"><img src="https://store.ulefone.com/cdn/shop/files/Ulefone_Armor_Pad_3_Pro-Black-1000px-17.jpg" alt="Pad 3 Pro"></div>
+                    <div class="product-info">
+                        <div class="product-title">Armor Pad 3 Pro</div>
+                        <div class="product-badge">GIANT BATTERY</div>
+                        <ul class="specs-list">
+                            <li><span>Feature</span> <span>With camping light, Support Endoscope, Microscope, Sound Kit</span></li>
+                            <li><span>CPU</span> <span>MediaTek MT8788, Octa-core</span></li>
+                            <li><span>RAM/ROM</span> <span>8GB / 256GB</span></li>
+                            <li><span>Battery</span> <span>33280mAh Battery, 66W Fast Charging</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Category</th>
+                            <th>Feature</th>
+                            <th>CPU</th>
+                            <th>RAM/ROM</th>
+                            <th>Battery</th>
+                            <th>RRP (HUF)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="fw-bold">Armor Pad 5 Ultra</td>
+                            <td>Rugged</td>
+                            <td>Built-in DLP Projector (540P), Dual Versatile LED Light</td>
+                            <td>Helio Dimensity 7400 5G SOC</td>
+                            <td>12GB / 512GB</td>
+                            <td>24200mAh</td>
+                            <td class="text-highlight">379,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Armor Pad 4 Ultra Thermal</td>
+                            <td>Rugged</td>
+                            <td>ThermoVue, HDMI, LED Light, uSmart</td>
+                            <td>Dimensity 6300 5G</td>
+                            <td>8GB / 256GB</td>
+                            <td>11800mAh</td>
+                            <td class="text-highlight">219,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Armor Pad 4 Ultra</td>
+                            <td>Rugged</td>
+                            <td>Versatile LED Light</td>
+                            <td>Helio Dimensity 6300 5G SOC</td>
+                            <td>8GB / 256GB</td>
+                            <td>11800mAh</td>
+                            <td class="text-highlight">179,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Armor Pad 3 Pro</td>
+                            <td>Rugged</td>
+                            <td>With camping light, Support Endoscope, Microscope, Sound Kit</td>
+                            <td>MediaTek MT8788, Octa-core</td>
+                            <td>8GB / 256GB</td>
+                            <td>33280mAh</td>
+                            <td class="text-highlight">169,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Armor Pad 2</td>
+                            <td>Rugged</td>
+                            <td>With camping light, Support Endoscope, Microscope</td>
+                            <td>MediaTek Helio G99 6nm</td>
+                            <td>8GB / 256GB</td>
+                            <td>18600mAh</td>
+                            <td class="text-highlight">159,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Armor Pad Pro</td>
+                            <td>Rugged</td>
+                            <td>Support Endoscope, Microscope</td>
+                            <td>MediaTek MT8788, Octa-core, 2.0GHz Chipset</td>
+                            <td>8GB / 128GB</td>
+                            <td>7650mAh</td>
+                            <td class="text-highlight">99,990 HUF</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="consumer" class="page">
+            <div class="header">
+                <h1>Consumer Devices</h1>
+                <p>Non-Rugged Tablets & Phones</p>
+            </div>
+
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-image"><img src="https://store.ulefone.com/cdn/shop/files/UlefoneTabA11Pro-SpaceGray-1000px-3.jpg" alt="Tab A11"></div>
+                    <div class="product-info">
+                        <div class="product-title">Tab A11 Pro</div>
+                        <div class="product-badge">SLIM METAL</div>
+                        <ul class="specs-list">
+                            <li><span>Feature</span> <span>Lightweight, Slim Metal Body</span></li>
+                            <li><span>CPU</span> <span>MediaTek Helio G99, Octa-core, 6nm / Unisoc T620, 8-Core</span></li>
+                            <li><span>RAM/ROM</span> <span>8GB / 256GB</span></li>
+                            <li><span>Battery</span> <span>8800mAh 18W</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image"><img src="https://store.ulefone.com/cdn/shop/files/Best-Smartphone-Ulefone-Note-20-Pro.jpg" alt="Note 20"></div>
+                    <div class="product-info">
+                        <div class="product-title">Note 20 Pro</div>
+                        <div class="product-badge">AMOLED</div>
+                        <ul class="specs-list">
+                            <li><span>Feature</span> <span>Low-blue Light, TUV Certification</span></li>
+                            <li><span>CPU</span> <span>Unisoc T606</span></li>
+                            <li><span>RAM/ROM</span> <span>4GB / 128GB</span></li>
+                            <li><span>Battery</span> <span>6000mAh</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="table-container">
+                <div class="section-title"><i class="fas fa-table"></i> Comparison</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Category</th>
+                            <th>Feature</th>
+                            <th>CPU</th>
+                            <th>RAM / ROM</th>
+                            <th>Battery</th>
+                            <th>RRP (HUF)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="fw-bold">Tab A11 Pro</td>
+                            <td>Tablet</td>
+                            <td>Lightweight, Slim Metal Body</td>
+                            <td>MediaTek Helio G99</td>
+                            <td>8GB / 256GB</td>
+                            <td>8800mAh</td>
+                            <td class="text-highlight">99,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Tab A11</td>
+                            <td>Tablet</td>
+                            <td>Lightweight, Slim Metal Body</td>
+                            <td>Unisoc T620</td>
+                            <td>4GB / 128GB</td>
+                            <td>8800mAh</td>
+                            <td class="text-highlight">79,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Tab W10</td>
+                            <td>Tablet</td>
+                            <td>Wi-Fi Only</td>
+                            <td>Unisoc T606</td>
+                            <td>4GB / 128GB</td>
+                            <td>6600mAh</td>
+                            <td class="text-highlight">59,990 HUF</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Note 20 Pro</td>
+                            <td>Smartphone</td>
+                            <td>Low-blue Light, TUV Certification</td>
+                            <td>Unisoc T606</td>
+                            <td>4GB / 128GB</td>
+                            <td>6000mAh</td>
+                            <td class="text-highlight">59,990 HUF</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div id="alldata" class="page">
+            <div class="header">
+                <h1>All Data</h1>
+                <p>Complete Product Specification List</p>
+                <button onclick="exportTableToExcel('full-data-table', 'ulefone_2025_data')" class="export-btn">
+                    <i class="fas fa-file-excel"></i> Export to Excel
+                </button>
+            </div>
+            <div class="table-container">
+                <table id="full-data-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Series</th>
+                            <th>Product Name</th>
+                            <th>Type</th>
+                            <th>Selling Point</th>
+                            <th>RAM</th>
+                            <th>ROM</th>
+                            <th>Storage</th>
+                            <th>Dimensions</th>
+                            <th>Ports</th>
+                            <th>Display</th>
+                            <th>Processor</th>
+                            <th>Rear Camera</th>
+                            <th>Front Camera</th>
+                            <th>Battery</th>
+                            <th>System</th>
+                            <th>Card Slot</th>
+                            <th>Network</th>
+                            <th>Connectivity</th>
+                            <th>RRP (HUF)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Mobile Phones</td><td>Armor</td><td>Armor 29 Pro</td><td>5G</td><td>Dual OLED Display, Versatile LED Light</td><td>16GB</td><td>512GB</td><td>16GB RAM + 16GB Virtual RAM, 512GB ROM</td><td>178.1 x 83.1 x 17.9 mm</td><td>Type-C Charging Port, USB 2.0</td><td>Main: 6.67-inch FHD+ OLED, 120Hz</td><td>MediaTek Dimensity 7400 5G Soc</td><td>50MP Flagship Main Camera (IMX989)</td><td>50MP HD Front Camera</td><td>21200mAh</td><td>Android 15</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD, Sub-6 (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>269 990 HUF</td></tr>
+                        <tr><td>Mobile Phones</td><td>Armor</td><td>Armor 29 Ultra</td><td>5G</td><td>Giant Battery, Dual OLED</td><td>16GB</td><td>1TB</td><td>16GB RAM + 16GB Virtual RAM, 1TB ROM</td><td>178.1 x 83.1 x 17.9 mm</td><td>Type-C Charging Port, USB 2.0</td><td>Main: 6.67-inch FHD+ OLED, 120Hz</td><td>MediaTek Dimensity 7400 5G Soc</td><td>50MP Flagship Main Camera (IMX989)</td><td>50MP HD Front Camera</td><td>21200mAh</td><td>Android 15</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD, Sub-6 (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>449 990 HUF</td></tr>
+                        <tr><td>Mobile Phones</td><td>Armor</td><td>Armor 28 Ultra</td><td>5G</td><td>Dual AMOLED screen, 64MP Infrared Night Vision Camera</td><td>16GB</td><td>1TB</td><td>16GB RAM + 16GB Virtual RAM, 1TB ROM</td><td>178.1 x 83.1 x 14.8 mm</td><td>Type-C Charging Port, USB 2.0</td><td>Main: 6.67-inch FHD+ OLED, 120Hz</td><td>MediaTek Dimensity 9300+ 5G Soc</td><td>50MP Flagship Main Camera (IMX989)</td><td>50MP HD Front Camera</td><td>10600mAh</td><td>Android 15</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD, Sub-6 (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>449 990 HUF</td></tr>
+                        <tr><td>Mobile Phones</td><td>Armor</td><td>Armor 34 Pro</td><td>5G</td><td>Built-in Projector</td><td>16GB</td><td>512GB</td><td>16GB RAM + 16GB Virtual RAM, 512GB ROM</td><td>183.1 x 86.6 x 32.7 mm</td><td>Type-C Charging Port, USB 2.0</td><td>6.95-inch FHD+, 120Hz</td><td>MediaTek Dimensity 7300, 4nm, MediaTek NPU 655</td><td>50MP Flagship (OV50H) 50MP Ultra-wide 64MP Ultra Night Vision</td><td>32MP HD Front Camera</td><td>25500mAh</td><td>Android 15</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, CDMA, WCDMA, LTE-FDD, LTE-TDD, Sub-6 (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>329 990 HUF</td></tr>
+                        <tr><td>Mobile Phones</td><td>Armor</td><td>Armor 30 Pro</td><td>5G</td><td>3.4-inch 60Hz Dual-screen, Halo Speaker</td><td>16GB</td><td>512GB</td><td>16GB RAM + 16GB Virtual RAM, 512GB ROM</td><td>178.1 x 83.1 x 17.9 mm</td><td>Type-C Charging Port, USB 2.0</td><td>6.95-inch 120Hz FHD+ Main Display</td><td>MediaTek Dimensity 7300X 5G</td><td>50MP Flagship Main Camera (IMX989)</td><td>50MP HD Front Camera</td><td>12800 mAh</td><td>Android 15</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD, Sub-6 (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>229 990 HUF</td></tr>
+                        <tr><td>Mobile Phones</td><td>Armor</td><td>Armor 30</td><td>4G</td><td>Hi-Fi Loud Speaker, Versatile LED Light</td><td>12GB</td><td>512GB</td><td>12GB RAM + 12GB Virtual RAM, 512GB ROM</td><td>178.1 x 83.1 x 17.9 mm</td><td>Type-C Charging Port, USB 2.0</td><td>6.95-inch 120Hz FHD+</td><td>MediaTek Helio G100</td><td>50MP Flagship Main Camera (IMX989)</td><td>50MP HD Front Camera</td><td>12800 mAh</td><td>Android 15</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>179 990 HUF</td></tr>
+                        
+                        <tr><td>Mobile Phones</td><td>Armor</td><td>Armor 26 Ultra WT</td><td>5G</td><td>Support Push-to-Talk over DMR, Dock charging</td><td>12GB</td><td>512GB</td><td>12GB RAM + 12GB Virtual RAM, 512GB ROM</td><td>179 x 83 x 25.5 mm</td><td>Type-C Charging Port, USB 2.0, Pogo Pin</td><td>6.78-inch FHD+, 120Hz</td><td>MediaTek Dimensity 8020 5G</td><td>200MP Main Camera (ISOCELL HP3)</td><td>50MP HD Front Camera</td><td>15600 mAh</td><td>Android 13</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD, Sub-6 (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>279 990 HUF</td></tr>
+                        <tr><td>Mobile Phones</td><td>Armor</td><td>Armor 26 Ultra</td><td>5G</td><td>Support Dock charging, Endoscope, Microscope</td><td>12GB</td><td>512GB</td><td>12GB RAM + 12GB Virtual RAM, 512GB ROM</td><td>179 x 83 x 25.5 mm</td><td>Type-C Charging Port, USB 2.0, Pogo Pin</td><td>6.78-inch FHD+, 120Hz</td><td>MediaTek Dimensity 8020 5G</td><td>200MP Main Camera (ISOCELL HP3)</td><td>50MP HD Front Camera</td><td>15600 mAh</td><td>Android 13</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD, Sub-6 (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>249 990 HUF</td></tr>
+                        <tr><td>Mobile Phones</td><td>Armor</td><td>Armor 27T Pro</td><td>5G</td><td>With FLIR Thermal Imaging, Infrared night vision</td><td>12GB</td><td>256GB</td><td>12GB RAM + 12GB Virtual RAM, 256GB ROM</td><td>178.1 x 83.1 x 14.8 mm</td><td>Type-C Charging Port, USB 2.0</td><td>6.78-inch FHD+, 120Hz</td><td>MediaTek Dimensity 6300 5G Soc</td><td>50MP Flagship Main Camera (IMX989)</td><td>32MP HD Front Camera</td><td>10600 mAh</td><td>Android 14</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD, Sub-6 (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>219 990 HUF</td></tr>
+                        <tr><td>Mobile Phones</td><td>Armor</td><td>Armor 27 Pro</td><td>5G</td><td>With Infrared night vision camera</td><td>12GB</td><td>256GB</td><td>12GB RAM + 12GB Virtual RAM, 256GB ROM</td><td>178.1 x 83.1 x 14.8 mm</td><td>Type-C Charging Port, USB 2.0</td><td>6.78-inch FHD+, 120Hz</td><td>MediaTek Dimensity 6300 5G Soc</td><td>50MP Flagship Main Camera (IMX989)</td><td>32MP HD Front Camera</td><td>10600 mAh</td><td>Android 14</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD, Sub-6 (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>179 990 HUF</td></tr>
+                        <tr><td>Mobile Phones</td><td>Armor</td><td>Armor 27</td><td>4G</td><td>64MP Infrared Night Vision Camera</td><td>12GB</td><td>256GB</td><td>12GB RAM + 12GB Virtual RAM, 256GB ROM</td><td>178.1 x 83.1 x 14.8 mm</td><td>Type-C Charging Port, USB 2.0</td><td>6.78-inch FHD+, 120Hz</td><td>MediaTek Helio G99</td><td>50MP Flagship Main Camera (IMX989)</td><td>32MP HD Front Camera</td><td>10600 mAh</td><td>Android 14</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>149 990 HUF</td></tr>
+                        <tr><td>Mobile Phones</td><td>Armor</td><td>Armor 25T Pro</td><td>5G</td><td>With ThermoVue Thermal Imaging, Slim</td><td>8GB</td><td>256GB</td><td>8GB RAM + 8GB Virtual RAM, 256GB ROM</td><td>178.1 x 83.1 x 12.5 mm</td><td>Type-C Charging Port, USB 2.0</td><td>6.78-inch FHD+, 120Hz</td><td>MediaTek Dimensity 6300 5G</td><td>50MP Flagship Main Camera (IMX989)</td><td>32MP HD Front Camera</td><td>6500 mAh</td><td>Android 14</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD, Sub-6 (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>179 990 HUF</td></tr>
+                        <tr><td>Mobile Phones</td><td>Armor</td><td>Armor 25T</td><td>4G</td><td>With ThermoVue Thermal Imaging, Slim</td><td>8GB</td><td>256GB</td><td>8GB RAM + 8GB Virtual RAM, 256GB ROM</td><td>178.1 x 83.1 x 12.5 mm</td><td>Type-C Charging Port, USB 2.0</td><td>6.78-inch FHD+, 120Hz</td><td>MediaTek Helio G99</td><td>50MP Flagship Main Camera (IMX989)</td><td>32MP HD Front Camera</td><td>6500 mAh</td><td>Android 14</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>169 990 HUF</td></tr>
+
+                        <tr><td>Mobile Phones</td><td>Armor Mini</td><td>Armor Mini 20T Pro</td><td>5G</td><td>Mini Size, with FLIR Thermal imaging</td><td>8GB</td><td>256GB</td><td>8GB RAM + 8GB Virtual RAM, 256GB ROM</td><td>133 x 63.3 x 22.5 mm</td><td>Type-C Charging Port, USB 2.0</td><td>4.7-inch HD+</td><td>MediaTek Dimensity 6300 5G Soc</td><td>50MP Flagship Main Camera (IMX989)</td><td>32MP HD Front Camera</td><td>6200 mAh</td><td>Android 14</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD, Sub-6 (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>209 990 HUF</td></tr>
+                        <tr><td>Mobile Phones</td><td>RugOne</td><td>Xever 7 Pro</td><td>5G</td><td>Thermal by FLIR Lepton 3.5, Swappable battery</td><td>12GB</td><td>512GB</td><td>12GB RAM + 12GB Virtual RAM, 512GB ROM</td><td>172 x 80 x 15 mm</td><td>Type-C Charging Port, USB 2.0</td><td>6.67-inch AMOLED FHD+</td><td>MediaTek Dimensity 7025</td><td>50MP Flagship Main Camera (IMX989)</td><td>32MP HD Front Camera</td><td>5550 mAh</td><td>Android 14</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD, Sub-6 (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>279 990 HUF</td></tr>
+                        <tr><td>Mobile Phones</td><td>RugOne</td><td>Xever 7</td><td>5G</td><td>Swappable battery</td><td>12GB</td><td>256GB</td><td>12GB RAM + 12GB Virtual RAM, 256GB ROM</td><td>172 x 80 x 15 mm</td><td>Type-C Charging Port, USB 2.0</td><td>6.67-inch AMOLED FHD+</td><td>MediaTek Dimensity 7025</td><td>50MP Flagship Main Camera (IMX989)</td><td>32MP HD Front Camera</td><td>5550 mAh</td><td>Android 14</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD, Sub-6 (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>219 990 HUF</td></tr>
+
+                        <tr><td>Mobile Phones</td><td>Armor</td><td>Armor 22</td><td>4G</td><td>With Infrared night vision camera</td><td>8GB</td><td>256GB</td><td>8GB RAM + 8GB Virtual RAM, 256GB ROM</td><td>176.8 x 84.9 x 15.0 mm</td><td>Type-C Charging Port, USB 2.0</td><td>6.58-inch FHD+, 120Hz</td><td>MediaTek Helio G96</td><td>64MP Main Camera</td><td>16MP HD Front Camera</td><td>6600 mAh</td><td>Android 13</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>109 990 HUF</td></tr>
+                        <tr><td>Mobile Phones</td><td>Armor</td><td>Armor 21</td><td>4G</td><td>With night vision camera, Support desk charging dock</td><td>8GB</td><td>256GB</td><td>8GB RAM + 8GB Virtual RAM, 256GB ROM</td><td>176.8 x 84.9 x 18.1 mm</td><td>Type-C Charging Port, USB 2.0</td><td>6.58-inch FHD+, 120Hz</td><td>MediaTek Helio G99</td><td>64MP Main Camera</td><td>16MP HD Front Camera</td><td>9600 mAh</td><td>Android 13</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>129 990 HUF</td></tr>
+
+                        <tr><td>Mobile Phones</td><td>Armor X</td><td>Armor X32 Pro</td><td>5G</td><td>With Night Vision Camera</td><td>8GB</td><td>256GB</td><td>8GB RAM + 8GB Virtual RAM, 256GB ROM</td><td>165 x 79 x 14 mm</td><td>Type-C Charging Port, USB 2.0</td><td>5.65-inch HD+</td><td>MediaTek Dimensity 6300 5G Soc</td><td>50MP Main Camera</td><td>16MP HD Front Camera</td><td>5500 mAh</td><td>Android 14</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD, Sub-6 (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>129 990 HUF</td></tr>
+                        <tr><td>Mobile Phones</td><td>Armor X</td><td>Armor X32</td><td>4G</td><td>With Night Vision Camera</td><td>6GB</td><td>128GB</td><td>6GB RAM + 6GB Virtual RAM, 128GB ROM</td><td>165 x 79 x 14 mm</td><td>Type-C Charging Port, USB 2.0</td><td>5.65-inch HD+</td><td>MediaTek Helio G91</td><td>50MP Main Camera</td><td>16MP HD Front Camera</td><td>5500 mAh</td><td>Android 14</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>89 990 HUF</td></tr>
+                        <tr><td>Mobile Phones</td><td>Armor X</td><td>Armor X31 Pro</td><td>5G</td><td>With Night Vision Camera</td><td>8GB</td><td>256GB</td><td>8GB RAM + 8GB Virtual RAM, 256GB ROM</td><td>168 x 81 x 15 mm</td><td>Type-C Charging Port, USB 2.0</td><td>6.56-inch HD+</td><td>MediaTek Dimensity 6300 5G Soc</td><td>50MP Main Camera</td><td>16MP HD Front Camera</td><td>6050 mAh</td><td>Android 14</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD, Sub-6 (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>129 990 HUF</td></tr>
+                        <tr><td>Mobile Phones</td><td>Armor X</td><td>Armor X31</td><td>4G</td><td>With Night Vision Camera</td><td>6GB</td><td>128GB</td><td>6GB RAM + 6GB Virtual RAM, 128GB ROM</td><td>168 x 81 x 15 mm</td><td>Type-C Charging Port, USB 2.0</td><td>6.56-inch HD+</td><td>MediaTek Helio G91</td><td>50MP Main Camera</td><td>16MP HD Front Camera</td><td>6050 mAh</td><td>Android 14</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>89 990 HUF</td></tr>
+                        <tr><td>Mobile Phones</td><td>Armor X</td><td>Armor X16 Pro</td><td>5G</td><td>With Night Vision Camera</td><td>8GB</td><td>256GB</td><td>8GB RAM + 8GB Virtual RAM, 256GB ROM</td><td>173 x 83 x 18 mm</td><td>Type-C Charging Port, USB 2.0</td><td>6.56-inch HD+, 120Hz</td><td>MediaTek Dimensity 6300 5G Soc</td><td>50MP Main Camera</td><td>16MP HD Front Camera</td><td>10360 mAh</td><td>Android 14</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD, Sub-6 (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>139 990 HUF</td></tr>
+                        <tr><td>Mobile Phones</td><td>Armor X</td><td>Armor X16</td><td>4G</td><td>With Night Vision Camera</td><td>6GB</td><td>128GB</td><td>6GB RAM + 6GB Virtual RAM, 128GB ROM</td><td>173 x 83 x 18 mm</td><td>Type-C Charging Port, USB 2.0</td><td>6.56-inch HD+</td><td>MediaTek Helio G96</td><td>50MP Main Camera</td><td>16MP HD Front Camera</td><td>10360 mAh</td><td>Android 14</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>99 990 HUF</td></tr>
+                        <tr><td>Mobile Phones</td><td>Armor X</td><td>Armor X13</td><td>4G</td><td>Night Vision Camera, Diamond design</td><td>6GB</td><td>64GB</td><td>6GB RAM + 6GB Virtual RAM, 64GB ROM</td><td>173 x 83 x 13.5 mm</td><td>Type-C Charging Port, USB 2.0</td><td>6.52-inch HD+</td><td>MediaTek Helio G36</td><td>50MP Main Camera</td><td>8MP HD Front Camera</td><td>6320 mAh</td><td>Android 13</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.0</td><td>79 990 HUF</td></tr>
+                        <tr><td>Mobile Phones</td><td>Armor X</td><td>Armor X12 Pro</td><td>4G</td><td>Palm-Size design</td><td>4GB</td><td>64GB</td><td>4GB RAM + 4GB Virtual RAM, 64GB ROM</td><td>157.2 x 76.5 x 13.7 mm</td><td>Type-C Charging Port, USB 2.0</td><td>5.45-inch HD+</td><td>MediaTek Helio G36</td><td>13MP Main Camera</td><td>8MP HD Front Camera</td><td>4860 mAh</td><td>Android 13</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.0</td><td>69 990 HUF</td></tr>
+                        <tr><td>Mobile Phones</td><td>Armor X</td><td>Armor X12</td><td>4G</td><td>Palm-Size design</td><td>3GB</td><td>32GB</td><td>3GB RAM + 3GB Virtual RAM, 32GB ROM</td><td>157.2 x 76.5 x 13.7 mm</td><td>Type-C Charging Port, USB 2.0</td><td>5.45-inch HD+</td><td>MediaTek Helio A22</td><td>13MP Main Camera</td><td>8MP HD Front Camera</td><td>4860 mAh</td><td>Android 13</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.0</td><td>59 990 HUF</td></tr>
+
+                        <tr><td>Mobile Phones</td><td>RugKing</td><td>RugKing 4 Pro</td><td>4G</td><td>10200mAh Large Battery, Rugged Design</td><td>8GB</td><td>256GB</td><td>8GB RAM + 8GB Virtual RAM, 256GB ROM</td><td>175 x 85 x 22 mm</td><td>Type-C Charging Port, USB 2.0</td><td>6.56-inch HD+, 90Hz</td><td>Unisoc T7250</td><td>50MP Main Camera</td><td>16MP HD Front Camera</td><td>10200 mAh</td><td>Android 14</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>89 990 HUF</td></tr>
+                        <tr><td>Mobile Phones</td><td>RugKing</td><td>RugKing 3 Pro</td><td>4G</td><td>90Hz Display, Rugged Design</td><td>8GB</td><td>128GB</td><td>8GB RAM + 8GB Virtual RAM, 128GB ROM</td><td>170 x 80 x 16 mm</td><td>Type-C Charging Port, USB 2.0</td><td>6.56-inch HD+, 90Hz</td><td>Unisoc T7250</td><td>50MP Main Camera</td><td>16MP HD Front Camera</td><td>5700 mAh</td><td>Android 14</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>69 990 HUF</td></tr>
+                        <tr><td>Mobile Phones</td><td>RugKing</td><td>RugKing 2 Pro</td><td>4G</td><td>5.45-inch Compact Design</td><td>4GB</td><td>128GB</td><td>4GB RAM + 4GB Virtual RAM, 128GB ROM</td><td>155 x 75 x 14 mm</td><td>Type-C Charging Port, USB 2.0</td><td>5.45-inch HD+, 90Hz</td><td>Unisoc T7250</td><td>13MP Main Camera</td><td>8MP HD Front Camera</td><td>5000 mAh</td><td>Android 14</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>69 990 HUF</td></tr>
+                        <tr><td>Mobile Phones</td><td>RugKing</td><td>RugKing</td><td>4G</td><td>5.99-inch HD+</td><td>8GB</td><td>256GB</td><td>8GB RAM + 8GB Virtual RAM, 256GB ROM</td><td>175 x 85 x 22 mm</td><td>Type-C Charging Port, USB 2.0</td><td>5.99-inch HD+</td><td>Unisoc T7255</td><td>50MP Main Camera</td><td>16MP HD Front Camera</td><td>9600 mAh</td><td>Android 14</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>109 990 HUF</td></tr>
+
+                        <tr><td>Tablets</td><td>Armor Pad</td><td>Armor Pad 5 Ultra</td><td>5G</td><td>Built-in DLP Projector (540P), Dual Versatile LED Light</td><td>12GB</td><td>512GB</td><td>12GB RAM + 12GB Virtual RAM, 512GB ROM</td><td>256.8 x 168.8 x 14.3 mm</td><td>Type-C Charging Port, USB 3.0, Pogo Pin</td><td>10.95-inch FHD+ 90Hz</td><td>Helio Dimensity 7400 5G SOC</td><td>50MP Main Camera</td><td>32MP HD Front Camera</td><td>24200 mAh</td><td>Android 14</td><td>Nano SIM + Nano SIM/micro SD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD, Sub-6 (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>379 990 HUF</td></tr>
+                        <tr><td>Tablets</td><td>Armor Pad</td><td>Armor Pad 4 Ultra Thermal</td><td>5G</td><td>ThermoVue Thermal Imaging, Versatile LED Light, HDMI</td><td>8GB</td><td>256GB</td><td>8GB RAM + 8GB Virtual RAM, 256GB ROM</td><td>261.74 x 166.76 x 14.3 mm</td><td>Type-C, 3.5mm Jack, HDMI, uSmart</td><td>10.36-inch 2K 1200*2000</td><td>Helio Dimensity 6300 5G SOC</td><td>50MP Main + ThermoVue</td><td>32MP</td><td>11800mAh</td><td>Android 14</td><td>Nano SIM + Nano SIM + microSD</td><td>GSM, CDMA, WCDMA, LTE-FDD, LTE-TDD, Sub-6</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>219 990 HUF</td></tr>
+                        <tr><td>Tablets</td><td>Armor Pad</td><td>Armor Pad 4 Ultra</td><td>5G</td><td>Versatile LED Light</td><td>8GB</td><td>256GB</td><td>8GB RAM + 8GB Virtual RAM, 256GB ROM</td><td>256.8 x 168.8 x 14.3 mm</td><td>Type-C Charging Port, USB 3.0, Pogo Pin</td><td>10.36-inch 2K</td><td>Helio Dimensity 6300 5G SOC</td><td>50MP Main Camera</td><td>32MP HD Front Camera</td><td>11800 mAh</td><td>Android 14</td><td>Nano SIM + Nano SIM/micro SD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD, Sub-6 (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>179 990 HUF</td></tr>
+                        <tr><td>Tablets</td><td>Armor Pad</td><td>Armor Pad 3 Pro</td><td>4G</td><td>With camping light, Support Endoscope, Microscope, Sound Kit</td><td>8GB</td><td>256GB</td><td>8GB RAM + 8GB Virtual RAM, 256GB ROM</td><td>261.7 x 166.8 x 21.2 mm</td><td>Type-C Charging Port, USB 2.0, Pogo Pin</td><td>10.36-inch, 2K</td><td>MediaTek MT8788</td><td>48MP Main Camera</td><td>32MP HD Front Camera</td><td>33280 mAh</td><td>Android 13</td><td>Nano SIM + Nano SIM/micro SD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT4.2</td><td>169 990 HUF</td></tr>
+                        <tr><td>Tablets</td><td>Armor Pad</td><td>Armor Pad 2</td><td>4G</td><td>With camping light, Support Endoscope, Microscope</td><td>8GB</td><td>256GB</td><td>8GB RAM + 8GB Virtual RAM, 256GB ROM</td><td>277.8 x 178 x 14 mm</td><td>Type-C Charging Port, USB 2.0, Pogo Pin</td><td>11-inch FHD+, 2K</td><td>MediaTek Helio G99 6nm</td><td>48MP Main Camera</td><td>16MP HD Front Camera</td><td>18600 mAh</td><td>Android 13</td><td>Nano SIM + Nano SIM/micro SD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>159 990 HUF</td></tr>
+                        <tr><td>Tablets</td><td>Armor Pad</td><td>Armor Pad Pro</td><td>4G</td><td>Support Endoscope, Microscope</td><td>8GB</td><td>128GB</td><td>8GB RAM + 8GB Virtual RAM, 128GB ROM</td><td>213.0 x 128.8 x 14.0 mm</td><td>Type-C Charging Port, USB 2.0, Pogo Pin</td><td>8.0-inch HD+</td><td>MediaTek MT8788</td><td>48MP Main Camera</td><td>32MP HD Front Camera</td><td>7650 mAh</td><td>Android 13</td><td>Nano SIM + Nano SIM/micro SD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT4.2</td><td>99 990 HUF</td></tr>
+                        <tr><td>Tablets</td><td>Tab A</td><td>Tab A11 Pro</td><td>4G</td><td>Lightweight, Slim Metal Body</td><td>8GB</td><td>256GB</td><td>8GB RAM + 8GB Virtual RAM, 256GB ROM</td><td>256.5 x 168.0 x 7.6 mm</td><td>Type-C Charging Port, USB 2.0, Pogo Pin</td><td>11-inch FHD+</td><td>MediaTek Helio G99</td><td>16MP Main Camera</td><td>8MP HD Front Camera</td><td>8800 mAh</td><td>Android 14</td><td>Nano SIM + Nano SIM/micro SD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.2</td><td>99 990 HUF</td></tr>
+                        <tr><td>Tablets</td><td>Tab A</td><td>Tab A11</td><td>4G</td><td>Lightweight, Slim Metal Body</td><td>4GB</td><td>128GB</td><td>4GB RAM + 4GB Virtual RAM, 128GB ROM</td><td>256.5 x 168.0 x 7.6 mm</td><td>Type-C Charging Port, USB 2.0, Pogo Pin</td><td>11 inch</td><td>Unisoc T620</td><td>16MP Main Camera</td><td>8MP HD Front Camera</td><td>8800 mAh</td><td>Android 14</td><td>Nano SIM + Nano SIM/micro SD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.0</td><td>79 990 HUF</td></tr>
+                        <tr><td>Tablets</td><td>Tab W</td><td>Tab W10</td><td>Wi-Fi</td><td>Wi-Fi Only</td><td>4GB</td><td>128GB</td><td>4GB RAM + 4GB Virtual RAM, 128GB ROM</td><td>242.3 x 161.1 x 9.7 mm</td><td>Type-C Charging Port, USB 2.0</td><td>10.1-inch FHD+</td><td>Unisoc T606</td><td>13MP Main Camera</td><td>5MP HD Front Camera</td><td>6600 mAh</td><td>Android 13</td><td>microSD Card Slot</td><td>N/A</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.0</td><td>59 990 HUF</td></tr>
+
+                        <tr><td>Mobile Phones</td><td>Armor Mini</td><td>Armor Mini 4</td><td>4G</td><td>Compact and Durable Mobile Device</td><td>64MB</td><td>128MB</td><td>64MB RAM + 128MB ROM</td><td>133 x 63.3 x 22.5 mm</td><td>Type-C Charging Port, USB 2.0</td><td>2.8-inch QVGA</td><td>Unisoc T117</td><td>0.3MP Main Camera</td><td>N/A</td><td>2100 mAh</td><td>Nucleus</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD (full list)</td><td>Bluetooth: BT5.0</td><td>29 990 HUF</td></tr>
+                        <tr><td>Mobile Phones</td><td>Note</td><td>Note 20 Pro</td><td>4G</td><td>Low-blue Light, TUV Certification</td><td>4GB</td><td>128GB</td><td>4GB RAM + 4GB Virtual RAM, 128GB ROM</td><td>168.5 x 77.5 x 9.8 mm</td><td>Type-C Charging Port, USB 2.0</td><td>6.75-inch HD+</td><td>Unisoc T606</td><td>50MP Main Camera</td><td>8MP HD Front Camera</td><td>6000 mAh</td><td>Android 14</td><td>3 Card Slots, Nano+Nano+microSD</td><td>GSM, WCDMA, LTE-FDD, LTE-TDD (full list)</td><td>WiFi: 2.4G/5G, 802.11 a/ac/b/g/n Bluetooth: BT5.0</td><td>59 990 HUF</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        function exportTableToExcel(tableID, filename = ''){
+            var table = document.getElementById(tableID);
+            var wb = XLSX.utils.table_to_book(table, {sheet: "Sheet1"});
+            var wbout = XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
+            function s2ab(s) {
+                var buf = new ArrayBuffer(s.length);
+                var view = new Uint8Array(buf);
+                for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+                return buf;
+            }
+            
+            filename = filename?filename+'.xlsx':'excel_data.xlsx';
+            
+            var blob = new Blob([s2ab(wbout)],{type:"application/octet-stream"});
+            var downloadLink = document.createElement("a");
+            downloadLink.href = URL.createObjectURL(blob);
+            downloadLink.download = filename;
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        }
+    </script>
+</body>
+</html>
